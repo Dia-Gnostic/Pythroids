@@ -1,5 +1,5 @@
 import pygame as pg
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, ASTEROID_MIN_RADIUS, ASTEROID_KINDS, ASTEROID_SPAWN_RATE, ASTEROID_MAX_RADIUS, PLAYER_RADIUS
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, ASTEROID_MIN_RADIUS, ASTEROID_KINDS, ASTEROID_SPAWN_RATE, ASTEROID_MAX_RADIUS, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED
 from player import Player
 
 def main():
@@ -19,6 +19,7 @@ def main():
 				return
 
 		screen.fill("black")
+		player.update(PLAYER_TURN_SPEED * dt, PLAYER_SPEED * dt)
 		player.draw(screen)
 		pg.display.flip()
 		dt = clock.tick(60) / 1000
