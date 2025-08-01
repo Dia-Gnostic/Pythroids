@@ -1,18 +1,26 @@
 import pygame as pg
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, ASTEROID_MIN_RADIUS, ASTEROID_KINDS, ASTEROID_SPAWN_RATE, ASTEROID_MAX_RADIUS, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, ASTEROID_MIN_RADIUS, ASTEROID_KINDS, ASTEROID_SPAWN_RATE, ASTEROID_MAX_RADIUS, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED, SCORE_FONT_SIZE
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from score import Score
 
 def main():
 	print("Starting Asteroids!")
 	print(f"Screen width: {SCREEN_WIDTH}")
 	print(f"Screen height: {SCREEN_HEIGHT}")
+
 	pg.init()
+
 	screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 	clock = pg.time.Clock()
 	dt = 0
+
+	pg.font.init()
+	
+	
+
 	updatable = pg.sprite.Group()
 	drawable = pg.sprite.Group()
 	asteroids = pg.sprite.Group()
@@ -22,11 +30,11 @@ def main():
 	Asteroid.containers = (asteroids, updatable, drawable)
 	AsteroidField.containers = (updatable)
 	Shot.containers = (updatable, drawable, shots)
+	Score.containers = (drawable)
 
 	player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_RADIUS)
 	asteroidfield = AsteroidField()
-
-
+	scorekeeper = Score(SCORE_FONT_SIZE)
 
 	while True:
 		for event in pg.event.get():
@@ -34,6 +42,7 @@ def main():
 				return
 
 		screen.fill("black")
+		
 
 		for object in updatable:
 			object.update(dt)
@@ -46,11 +55,11 @@ def main():
 				if object.isCollide(bullet):
 					object.split()
 					bullet.kill()
+					scorekeeper.score += 1
+					print(scorekeeper.score)
 
 		for object in drawable:
 			object.draw(screen)
-
-		
 
 		pg.display.flip()
 		dt = clock.tick(60) / 1000
