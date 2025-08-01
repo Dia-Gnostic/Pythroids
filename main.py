@@ -3,6 +3,7 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT, ASTEROID_MIN_RADIUS, ASTEROID
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from shot import Shot
 
 def main():
 	print("Starting Asteroids!")
@@ -15,11 +16,13 @@ def main():
 	updatable = pg.sprite.Group()
 	drawable = pg.sprite.Group()
 	asteroids = pg.sprite.Group()
+	shots = pg.sprite.Group()
 
 	Player.containers = (updatable, drawable)
 	Asteroid.containers = (asteroids, updatable, drawable)
 	AsteroidField.containers = (updatable)
-	
+	Shot.containers = (updatable, drawable, shots)
+
 	player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, PLAYER_RADIUS)
 	asteroidfield = AsteroidField()
 
@@ -35,8 +38,19 @@ def main():
 		for object in updatable:
 			object.update(dt)
 		
+		for object in asteroids:
+			if object.isCollide(player):
+				print("Game Over!")
+				return exit()
+			for bullet in shots:
+				if object.isCollide(bullet):
+					object.split()
+					bullet.kill()
+
 		for object in drawable:
 			object.draw(screen)
+
+		
 
 		pg.display.flip()
 		dt = clock.tick(60) / 1000
